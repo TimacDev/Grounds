@@ -38,7 +38,7 @@ Default to SHORT, chat-friendly replies: at most 3-4 short sentences, OR at most
 Give a longer, detailed answer ONLY when the user explicitly asks for it — e.g. "give me a full recipe", "explain in detail", "compare X and Y in depth". A question merely being technical is NOT a request for depth: answer it briefly first, then offer to expand (e.g. "want the full recipe?").
 
 CATALOG
-When the user asks about coffees available in the app, wants a recommendation from the catalog, or asks about a specific coffee's details, call get_coffees and answer from its results. Never invent catalog entries, ratings, or roasters — if a coffee isn't in the results, say it's not in the catalog. Even with many results, keep to the FORMAT rule: summarize a few, don't dump the whole list.
+When the user asks about coffees available in the app, wants a recommendation from the catalog, or asks about a specific coffee's details, s get_coffees and answer from its results. Never invent catalog entries, ratings, or roasters — if a coffee isn't in the results, say it's not in the catalog. Even with many results, keep to the FORMAT rule: summarize a few, don't dump the whole list.
 
 LOGGING
 When the user wants to log/save a coffee or a brew, use log_coffee or log_brew — they fill in the matching form in their journal with the details so they can review and submit it themselves; neither tool saves anything on its own, so never tell the user something has been saved. Only these tools can act on the journal — if no logging tool is available, tell the user they need to log in.
@@ -179,7 +179,32 @@ function toContents(history, userMessage) {
   return [...windowed, { role: 'user', parts: [{ text: userMessage }] }];
 }
 
-export async function BeanieBot(userMessage, user, history = []) {
+// Streams one model turn: yields { text } for each text chunk, and returns
+// { call, content, streamedText } — the first function call (if any) plus the
+// model's full turn (all parts merged across chunks) so its thoughtSignature can
+// be echoed back — gemini-3.1 rejects the follow-up call if the signature is missing.
+async function* streamTurn(contents, config) {
+  const stream = await ai.models.generateContentStream({ model: MODEL, contents, config });
+  let call = null;
+  let streamedText = false;
+  const parts = [];
+  for await (const chunk of stream) {
+    const chunkParts = chunk.candidates?.[0]?.content?.parts;
+    if (chunkParts) parts.push(...chunkParts);
+    if (chunk.text) {
+      streamedText = true;
+      yield { text: chunk.text };
+    }
+    call = chunk.functionCalls?.[0];
+    if (call) break;
+  }
+  return { call, content: { role: 'model', parts }, streamedText };
+}
+
+// Async generator: yields NDJSON-able events for the chat route to stream —
+// { text } chunks as the model generates, then { prefill } / { action } when a
+// write tool fills a form or submits one.
+export async function* BeanieBot(userMessage, user, history = []) {
   const tools = await buildTools(user);
   const config = {
     systemInstruction: behaviorInstruction,
@@ -188,24 +213,30 @@ export async function BeanieBot(userMessage, user, history = []) {
   };
   const contents = toContents(history, userMessage);
 
-  const response = await ai.models.generateContent({ model: MODEL, contents, config });
-  const call = response.functionCalls?.[0];
+  const turn = yield* streamTurn(contents, config);
+  const call = turn.call;
+  let streamedText = turn.streamedText;
 
-  // Write tools stay terminal (return a { text, prefill? } result).
-  if (call?.name === 'log_coffee') return logCoffee(user, call.args ?? {});
-  if (call?.name === 'log_brew') return logBrew(user, call.args ?? {});
-  if (call?.name === 'submit_form') return submitForm(user);
+  // Write tools stay terminal (yield a text + optional prefill/action result).
+  if (call?.name === 'log_coffee' || call?.name === 'log_brew' || call?.name === 'submit_form') {
+    const result =
+      call.name === 'log_coffee' ? logCoffee(user, call.args ?? {})
+      : call.name === 'log_brew' ? await logBrew(user, call.args ?? {})
+      : submitForm(user);
+    yield { text: result.text };
+    if (result.prefill) yield { prefill: result.prefill };
+    if (result.action) yield { action: result.action };
+    return;
+  }
 
   // Read tool: run it, feed the result back, and let the model answer in prose.
   if (call?.name === 'get_coffees') {
     const coffees = await getCoffeeCatalog();
-    // Echo back the model's actual turn (not a hand-built part) so its thoughtSignature
-    // is preserved — gemini-3.1 rejects the follow-up call if the signature is missing.
-    contents.push(response.candidates[0].content);
+    contents.push(turn.content);
     contents.push({ role: 'user', parts: [{ functionResponse: { name: 'get_coffees', response: { coffees } } }] });
-    const followup = await ai.models.generateContent({ model: MODEL, contents, config });
-    return { text: followup.text ?? "Sorry, I didn't catch that — could you rephrase?" };
+    const followup = yield* streamTurn(contents, config);
+    streamedText = streamedText || followup.streamedText;
   }
 
-  return { text: response.text ?? "Sorry, I didn't catch that — could you rephrase?" };
+  if (!streamedText) yield { text: "Sorry, I didn't catch that — could you rephrase?" };
 }

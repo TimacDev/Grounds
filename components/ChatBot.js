@@ -13,6 +13,7 @@ export default function ChatBot({ visible = true, onPrefill, onSubmitForm }) {
   ]);
   const [input, setInput] = useState("");
   const [sending, setSending] = useState(false);
+  const [streaming, setStreaming] = useState(false);
   const [showTeaser, setShowTeaser] = useState(false);
   const scrollRef = useRef(null);
 
@@ -47,23 +48,59 @@ export default function ChatBot({ visible = true, onPrefill, onSubmitForm }) {
     setInput("");
     setSending(true);
 
+    // The reply arrives as an NDJSON stream — { text } chunks we append to one
+    // growing bot message, plus optional { prefill } / { action } events.
+    let gotReply = false;
+    function handleEvent(event) {
+      if (event.text) {
+        if (gotReply) {
+          setMessages((prev) => [
+            ...prev.slice(0, -1),
+            { ...prev[prev.length - 1], text: prev[prev.length - 1].text + event.text },
+          ]);
+        } else {
+          gotReply = true;
+          setStreaming(true);
+          setMessages((prev) => [...prev, { role: "bot", text: event.text }]);
+        }
+      }
+      if (event.prefill) onPrefill?.(event.prefill);
+      if (event.action === "submit") onSubmitForm?.();
+    }
+
     try {
       const res = await fetch("/api/chat", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ message: text, history: messages }),
       });
-      const { reply, prefill, action } = await res.json();
-      setMessages((prev) => [...prev, { role: "bot", text: reply }]);
-      if (prefill) onPrefill?.(prefill);
-      if (action === "submit") onSubmitForm?.();
+      if (!res.ok || !res.body) throw new Error("chat request failed");
+
+      const reader = res.body.getReader();
+      const decoder = new TextDecoder();
+      let buffer = "";
+      while (true) {
+        const { value, done } = await reader.read();
+        if (done) break;
+        buffer += decoder.decode(value, { stream: true });
+        const lines = buffer.split("\n");
+        buffer = lines.pop(); // keep any partial trailing line for the next read
+        for (const line of lines) {
+          if (line.trim()) handleEvent(JSON.parse(line));
+        }
+      }
+      if (buffer.trim()) handleEvent(JSON.parse(buffer));
+      if (!gotReply) throw new Error("empty reply");
     } catch {
-      setMessages((prev) => [
-        ...prev,
-        { role: "bot", text: "Sorry, I couldn't reach Mr. Beanie right now. Please try again." },
-      ]);
+      if (!gotReply) {
+        setMessages((prev) => [
+          ...prev,
+          { role: "bot", text: "Sorry, I couldn't reach Mr. Beanie right now. Please try again." },
+        ]);
+      }
     } finally {
       setSending(false);
+      setStreaming(false);
     }
   }
 
@@ -128,7 +165,7 @@ export default function ChatBot({ visible = true, onPrefill, onSubmitForm }) {
             {m.role === "bot" ? <ReactMarkdown>{m.text}</ReactMarkdown> : m.text}
           </div>
         ))}
-        {sending && (
+        {sending && !streaming && (
           <div
             className="chatbot-msg chatbot-msg-bot chatbot-msg-typing"
             aria-label="Assistant is typing"
