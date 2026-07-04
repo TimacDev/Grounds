@@ -10,6 +10,15 @@ const TYPE_CHARS_PER_TICK = 3;
 
 const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
+// Teaser speech bubbles shown once above the chat button: each pops in at
+// `showAt` and fades out at `hideAt` (ms after the widget becomes visible).
+// The second waits 1s after the first hides so the text swaps while hidden
+// (the fade transition is 0.25s).
+const TEASERS = [
+  { text: "Hi, I'm Mr. Beanie!", showAt: 2500, hideAt: 8500 },
+  { text: "Ask me anything about coffee!", showAt: 9500, hideAt: 15500 },
+];
+
 export default function ChatBot({ visible = true, onPrefill, onSubmitForm }) {
   const [open, setOpen] = useState(false);
   const [messages, setMessages] = useState([
@@ -22,6 +31,7 @@ export default function ChatBot({ visible = true, onPrefill, onSubmitForm }) {
   const [sending, setSending] = useState(false);
   const [streaming, setStreaming] = useState(false);
   const [showTeaser, setShowTeaser] = useState(false);
+  const [teaserText, setTeaserText] = useState(TEASERS[0].text);
   const scrollRef = useRef(null);
 
   // Auto-scroll to the latest message whenever the list grows or the panel opens.
@@ -31,20 +41,32 @@ export default function ChatBot({ visible = true, onPrefill, onSubmitForm }) {
     }
   }, [messages, sending, open]);
 
-  // Teaser speech bubble: once the widget becomes visible (user past the landing),
-  // pop it in after ~2.5s, then auto-hide ~6s later. Runs only once. We toggle a
-  // class (rather than unmount) so CSS can animate it in and out.
+  // Teaser speech bubbles: once the widget becomes visible (user past the landing),
+  // play the TEASERS sequence — each message pops in at showAt and auto-hides at
+  // hideAt. Runs only once. We toggle a class (rather than unmount) so CSS can
+  // animate each bubble in and out.
   const teasedRef = useRef(false);
+  const teaserTimersRef = useRef([]);
   useEffect(() => {
     if (!visible || teasedRef.current) return;
     teasedRef.current = true;
-    const showTimer = setTimeout(() => setShowTeaser(true), 2500);
-    const hideTimer = setTimeout(() => setShowTeaser(false), 8500);
-    return () => {
-      clearTimeout(showTimer);
-      clearTimeout(hideTimer);
-    };
+    teaserTimersRef.current = TEASERS.flatMap(({ text, showAt, hideAt }) => [
+      setTimeout(() => {
+        setTeaserText(text);
+        setShowTeaser(true);
+      }, showAt),
+      setTimeout(() => setShowTeaser(false), hideAt),
+    ]);
+    return () => teaserTimersRef.current.forEach(clearTimeout);
   }, [visible]);
+
+  // Once the user opens the chat the teasers have done their job — cancel any
+  // pending ones so a still-running show window can't flash a bubble on close.
+  useEffect(() => {
+    if (!open) return;
+    teaserTimersRef.current.forEach(clearTimeout);
+    setShowTeaser(false);
+  }, [open]);
 
   async function send(e) {
     e.preventDefault();
@@ -145,11 +167,15 @@ export default function ChatBot({ visible = true, onPrefill, onSubmitForm }) {
     return (
       <>
         <div
+          // Distinct key so React never recycles the panel's DOM node into the
+          // teaser on close — a morphed node would CSS-transition to opacity 0,
+          // flashing the teaser text for a moment.
+          key="teaser"
           className={`chatbot-teaser${showTeaser ? "" : " chatbot-teaser-off"}${hiddenClass}`}
           onClick={() => setOpen(true)}
           aria-hidden="true"
         >
-          {"Hi, I'm Mr. Beanie!"}
+          {teaserText}
         </div>
         <button
           className={`chatbot-bubble${hiddenClass}`}
@@ -172,6 +198,7 @@ export default function ChatBot({ visible = true, onPrefill, onSubmitForm }) {
 
   return (
     <div
+      key="panel"
       className={`chatbot-panel${hiddenClass}`}
       role="dialog"
       aria-label="Coffee assistant chat"
