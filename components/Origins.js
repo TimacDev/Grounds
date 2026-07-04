@@ -17,7 +17,7 @@ export default function Origins() {
 
   return (
     <div>
-      <h1 className="page-title">Origins Guide</h1>
+      <h1 className="page-title"><img className="page-title-icon" src="/icons/origins.svg" alt="" />Origins Guide</h1>
       <p className="page-sub">Every great cup starts somewhere. Here you can find some of the most relevant countries in coffee production.</p>
 
       <div className="origins-intro">

@@ -19,13 +19,13 @@ const WATER_SOURCES = [
 export default function Water() {
   return (
     <div>
-      <h1 className="page-title">💧 Water</h1>
+      <h1 className="page-title"><img className="page-title-icon" src="/icons/water.svg" alt="" />Water</h1>
       <p className="page-sub">Your cup is ~98% water. Spend a year buying great beans and the wrong water will still flatten every one of them.</p>
 
       <div className="water-hero">
         <div className="water-hero-quote">
           <div className="meta">Coffee, by mass</div>
-          <div className="big">98.5% water,<br/>1.5% bean.</div>
+          <div className="big">98% water,<br/>2% bean.</div>
           <div className="meta">— SCA brewing standard</div>
         </div>
         <div className="water-targets">

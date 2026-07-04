@@ -153,7 +153,20 @@
 }
 .nav-tab.personal:hover { border-color: #e8a05a; color: #f5deb3; background: transparent; }
 .nav-tab.personal.active { background: transparent; border-color: #e8a05a; color: #e8a05a; font-weight: 600; }
-.nav-tab .nav-icon { font-size: 13px; opacity: 0.85; }
+/* Personal-tab icons: the SVG in public/icons/ is used as a mask so the
+   icon tints with the tab's text color (hover/active states included). */
+.nav-tab .nav-icon {
+  width: 14px;
+  height: 14px;
+  flex-shrink: 0;
+  background: currentColor;
+  opacity: 0.85;
+  -webkit-mask-position: center; mask-position: center;
+  -webkit-mask-size: contain; mask-size: contain;
+  -webkit-mask-repeat: no-repeat; mask-repeat: no-repeat;
+}
+.nav-icon-quiz { -webkit-mask-image: url('/icons/quiz.svg'); mask-image: url('/icons/quiz.svg'); }
+.nav-icon-journal { -webkit-mask-image: url('/icons/journal.svg'); mask-image: url('/icons/journal.svg'); }
 .nav-tab.logout { flex-shrink: 0; color: #f5f0e8; border: 1px solid rgba(245,240,232,0.3); }
 
 /* ── Collapsed nav (burger + dropdown) — visibility toggled in responsive.css ── */

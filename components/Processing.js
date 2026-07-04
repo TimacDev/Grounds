@@ -59,7 +59,7 @@ export default function Processing() {
 
   return (
     <div>
-      <h1 className="page-title">🫧 Processing Guide</h1>
+      <h1 className="page-title"><img className="page-title-icon" src="/icons/processing.svg" alt="" />Processing Guide</h1>
       <p className="page-sub">Between the cherry and the cup lies the most important — and most overlooked — choice in coffee. How the fruit is removed shapes everything that follows.</p>
 
       <div className="proc-grid">

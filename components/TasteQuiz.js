@@ -70,7 +70,7 @@ export default function TasteQuiz() {
   const q = QUIZ_QUESTIONS[step];
   return (
     <div className="quiz-wrap">
-      <h1 className="page-title">Taste Quiz</h1>
+      <h1 className="page-title"><img className="page-title-icon" src="/icons/quiz.svg" alt="" />Taste Quiz</h1>
       <p className="page-sub">5 quick questions to find your flavor profile.</p>
       <div className="progress-bar quiz-progress">
         <div className="progress-fill" style={{'--fill':`${(step/QUIZ_QUESTIONS.length)*100}%`}}></div>

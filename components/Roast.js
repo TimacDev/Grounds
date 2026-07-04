@@ -13,7 +13,7 @@ export default function Roast() {
 
   return (
     <div>
-      <h1 className="page-title">🔥 Roast Types</h1>
+      <h1 className="page-title"><img className="page-title-icon" src="/icons/roast.svg" alt="" />Roast Types</h1>
       <p className="page-sub">Slide to explore how roast level changes flavor.</p>
       <div className="roast-slider">
         <div className="roast-labels">

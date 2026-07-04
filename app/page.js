@@ -19,9 +19,10 @@ const GUIDE_GROUPS = [
   { theme:'Exploring',     tabs: [{ id:'origins', label:'Origins' }, { id:'processing', label:'Processing' }] },
   { theme:'Brewing',       tabs: [{ id:'brew', label:'Methods' }, { id:'water', label:'Water' }, { id:'hardware', label:'Hardware' }, { id:'roast', label:'Roast' }] },
 ];
+// Icons come from public/icons/<id>.svg via the nav-icon-<id> CSS mask classes.
 const PERSONAL_TABS = [
-  { id:'quiz', label:'Taste Quiz', icon:'✦' },
-  { id:'journal',  label:'My Coffee Journal',     icon:'❒' },
+  { id:'quiz', label:'Taste Quiz' },
+  { id:'journal',  label:'My Coffee Journal' },
 ];
 
 export default function App() {
@@ -127,7 +128,7 @@ export default function App() {
                 <span className="nav-divider"></span>
                 {PERSONAL_TABS.map(tt =>
                   <button key={tt.id} className={`nav-tab personal${tab===tt.id ? ' active' : ''}`} onClick={() => setTab(tt.id)}>
-                    <span className="nav-icon">{tt.icon}</span>{tt.label}
+                    <span className={`nav-icon nav-icon-${tt.id}`} aria-hidden="true"></span>{tt.label}
                   </button>
                 )}
               </div>
@@ -162,7 +163,7 @@ export default function App() {
                   <span className="nav-group-label">Personal</span>
                   {PERSONAL_TABS.map(tt =>
                     <button key={tt.id} className={`nav-tab personal nav-menu-tab${tab===tt.id ? ' active' : ''}`} onClick={() => selectTab(tt.id)}>
-                      <span className="nav-icon">{tt.icon}</span>{tt.label}
+                      <span className={`nav-icon nav-icon-${tt.id}`} aria-hidden="true"></span>{tt.label}
                     </button>
                   )}
                 </div>

@@ -15,7 +15,7 @@ const HW_KIT = [
 export default function Hardware() {
   return (
     <div>
-      <h1 className="page-title">⚙️ Hardware</h1>
+      <h1 className="page-title"><img className="page-title-icon" src="/icons/hardware.svg" alt="" />Hardware</h1>
       <p className="page-sub">There is one piece of equipment that matters more than every other piece of equipment combined.</p>
 
       <div className="hw-callout">

@@ -16,6 +16,15 @@ html, body { overflow: hidden; height: 100vh; margin: 0; }
   color: #1a1208;
   margin-bottom: 4px;
 }
+/* Title icons live in public/icons/<tab-id>.svg — sized in em so they
+   scale with the responsive title. */
+.page-title-icon {
+  width: 0.85em;
+  height: 0.85em;
+  display: inline-block;
+  vertical-align: -0.08em;
+  margin-right: 10px;
+}
 .page-sub { font-size: 15px; color: #7a6245; margin-bottom: 32px; font-weight: 400; line-height: 1.5; max-width: 600px; }
 
 .sk-box {
