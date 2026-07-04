@@ -3,6 +3,13 @@
 import { useState, useRef, useEffect } from "react";
 import ReactMarkdown from "react-markdown";
 
+// Typewriter pacing: the model streams much faster than a comfortable reading
+// speed, so replies are revealed a few characters per tick (~75 chars/sec).
+const TYPE_TICK_MS = 40;
+const TYPE_CHARS_PER_TICK = 3;
+
+const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+
 export default function ChatBot({ visible = true, onPrefill, onSubmitForm }) {
   const [open, setOpen] = useState(false);
   const [messages, setMessages] = useState([
@@ -48,22 +55,38 @@ export default function ChatBot({ visible = true, onPrefill, onSubmitForm }) {
     setInput("");
     setSending(true);
 
-    // The reply arrives as an NDJSON stream — { text } chunks we append to one
-    // growing bot message, plus optional { prefill } / { action } events.
+    // The reply arrives as an NDJSON stream — { text } chunks go into `pending`,
+    // which the typer loop below reveals into one growing bot message at reading
+    // speed; { prefill } / { action } events still fire as soon as they arrive.
     let gotReply = false;
-    function handleEvent(event) {
-      if (event.text) {
-        if (gotReply) {
-          setMessages((prev) => [
-            ...prev.slice(0, -1),
-            { ...prev[prev.length - 1], text: prev[prev.length - 1].text + event.text },
-          ]);
-        } else {
-          gotReply = true;
-          setStreaming(true);
-          setMessages((prev) => [...prev, { role: "bot", text: event.text }]);
-        }
+    let pending = "";
+    let readerDone = false;
+
+    function reveal(text) {
+      if (gotReply) {
+        setMessages((prev) => [
+          ...prev.slice(0, -1),
+          { ...prev[prev.length - 1], text: prev[prev.length - 1].text + text },
+        ]);
+      } else {
+        gotReply = true;
+        setStreaming(true);
+        setMessages((prev) => [...prev, { role: "bot", text }]);
       }
+    }
+
+    const typer = (async () => {
+      while (!readerDone || pending) {
+        if (pending) {
+          reveal(pending.slice(0, TYPE_CHARS_PER_TICK));
+          pending = pending.slice(TYPE_CHARS_PER_TICK);
+        }
+        await sleep(TYPE_TICK_MS);
+      }
+    })();
+
+    function handleEvent(event) {
+      if (event.text) pending += event.text;
       if (event.prefill) onPrefill?.(event.prefill);
       if (event.action === "submit") onSubmitForm?.();
     }
@@ -90,8 +113,14 @@ export default function ChatBot({ visible = true, onPrefill, onSubmitForm }) {
         }
       }
       if (buffer.trim()) handleEvent(JSON.parse(buffer));
+      readerDone = true;
+      await typer;
       if (!gotReply) throw new Error("empty reply");
     } catch {
+      // Let the typer finish revealing whatever text already arrived, then
+      // apologize only if the reply never started.
+      readerDone = true;
+      await typer;
       if (!gotReply) {
         setMessages((prev) => [
           ...prev,
