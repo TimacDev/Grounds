@@ -82,15 +82,6 @@
 .history-cta-sub { font-size: 14px; color: #5a3e22; max-width: 420px; line-height: 1.5; }
 .history-cta-actions { display: flex; gap: 10px; flex-wrap: wrap; }
 
-@media (max-width: 900px) {
-  .journey { grid-template-columns: repeat(2, 1fr); }
-  .journey-step:nth-child(5n) { border-right: 1.5px dashed #c4a882; }
-  .journey-step:nth-child(2n) { border-right: none; }
-  .history-hero { padding: 36px 28px; }
-  .history-hero-title { font-size: 44px; }
-  .history-stats { flex-wrap: wrap; gap: 24px; }
-}
-
 /* ── Processing ── */
 .proc-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 16px; margin-bottom: 32px; }
 .proc-card {

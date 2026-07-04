@@ -1,0 +1,79 @@
+/* ═══════════════════════════════════════════════════════════════
+   Responsive overrides — MUST stay the last import in app/layout.js
+   so equal-specificity overrides win the cascade.
+
+   Two breakpoints only (no tablet tier — desktop layout holds
+   until the phone breakpoint, except the nav):
+     bp-nav:    1500px — full nav row no longer fits; burger menu
+                (measured logged in: cramped at 1460, clips ≤1440)
+     bp-mobile:  640px — phone layout: 1-col grids, tighter spacing
+   CSS vars can't be used in @media conditions; if you change a
+   number below, update this comment.
+   ═══════════════════════════════════════════════════════════════ */
+
+/* ── bp-nav: collapse the navbar ── */
+@media (max-width: 1500px) {
+  .app-nav { display: none; }
+  .app-header > .nav-tab.logout { display: none; } /* moves into the dropdown */
+  .nav-burger { display: flex; }
+  .nav-menu { display: block; }
+}
+
+/* ── Exception (component-scoped, not a tablet tier): History journey
+      5-col grid breaks below ~900px. Moved verbatim from guides.css. ── */
+@media (max-width: 900px) {
+  .journey { grid-template-columns: repeat(2, 1fr); }
+  .journey-step:nth-child(5n) { border-right: 1.5px dashed #c4a882; }
+  .journey-step:nth-child(2n) { border-right: none; }
+  .history-hero { padding: 36px 28px; }
+  .history-hero-title { font-size: 44px; }
+  .history-stats { flex-wrap: wrap; gap: 24px; }
+}
+
+/* ── bp-mobile: phone layout ── */
+@media (max-width: 640px) {
+  /* shell */
+  .app-header { padding: 0 16px; gap: 16px; }
+  .main { padding: 20px 16px; }
+  .page-title { font-size: 30px; }
+
+  /* History */
+  .history-hero { padding: 28px 20px; }
+  .history-hero-title { font-size: 36px; }
+  .section-heading-text { font-size: 24px; }
+  .journey { grid-template-columns: 1fr; }
+  .journey-step { border-right: none; border-bottom: 1.5px dashed #c4a882; min-height: 0; }
+  .journey-step:last-child { border-bottom: none; }
+  .history-cta { padding: 22px 20px; }
+
+  /* Processing */
+  .proc-detail { grid-template-columns: 1fr; padding: 18px 16px; gap: 20px; }
+  .proc-tradeoffs { grid-template-columns: 1fr; }
+
+  /* Origins */
+  .overlay-bg { padding: 16px; }
+  .overlay-card { padding: 18px 16px; }
+
+  /* Water */
+  .water-hero { grid-template-columns: 1fr; }
+  .mineral-grid { grid-template-columns: 1fr; }
+  .source-row { grid-template-columns: 1fr; gap: 8px; }
+
+  /* Hardware */
+  .hw-callout { grid-template-columns: 1fr; }
+  .hw-rank-row { grid-template-columns: 26px 90px 1fr 44px; gap: 8px; }
+  .hw-vs { grid-template-columns: 1fr; }
+  .hw-vs-divider { padding: 6px 0; }
+  .hw-kit { grid-template-columns: 1fr; }
+  .hw-grinder-types { grid-template-columns: 1fr; }
+
+  /* Roast */
+  .roast-compare { grid-template-columns: 1fr; }
+
+  /* Taste Quiz */
+  .rec-grid { grid-template-columns: 1fr; }
+
+  /* Journal */
+  .log-layout { grid-template-columns: 1fr; }
+  .modal { padding: 20px 16px; }
+}

@@ -3,6 +3,8 @@ import './styles/layout.css';
 import './styles/guides.css';
 import './styles/forms.css';
 import './styles/chatbot.css';
+// responsive.css must stay last — it overrides earlier files at the breakpoints.
+import './styles/responsive.css';
 
 export const metadata = {
   title: 'Grounds — Coffee Field Guide',

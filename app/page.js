@@ -35,6 +35,15 @@ export default function App() {
   // so repeated "submit it" requests re-trigger the journal's submit effect
   // even if nothing else about the app state changed.
   const [submitSignal, setSubmitSignal] = useState(0);
+  // Collapsed-nav dropdown (burger menu). Only visible below the bp-nav
+  // breakpoint — CSS hides both the burger and the panel on wide screens.
+  const [menuOpen, setMenuOpen] = useState(false);
+
+  // Used by the collapsed dropdown: switch tab and close the menu in one go.
+  function selectTab(id) {
+    setTab(id);
+    setMenuOpen(false);
+  }
 
   // On load, ask the server who we are (via the session cookie) so a refresh
   // keeps you logged in. authChecked avoids flashing the login form first.
@@ -123,10 +132,46 @@ export default function App() {
                 )}
               </div>
             </nav>
+            <button
+              className={`nav-burger${menuOpen ? ' open' : ''}`}
+              aria-label="Menu"
+              aria-expanded={menuOpen}
+              aria-controls="nav-menu"
+              onClick={() => setMenuOpen((o) => !o)}
+            >
+              <span className="nav-burger-line"></span>
+              <span className="nav-burger-line"></span>
+              <span className="nav-burger-line"></span>
+            </button>
             {user && (
               <button className="nav-tab logout" onClick={logout}>
                 Log out
               </button>
+            )}
+            {menuOpen && (
+              <div className="nav-menu" id="nav-menu">
+                {GUIDE_GROUPS.map(g =>
+                  <div key={g.theme} className="nav-menu-group">
+                    <span className="nav-group-label">{g.theme}</span>
+                    {g.tabs.map(tt =>
+                      <button key={tt.id} className={`nav-tab nav-menu-tab${tab===tt.id ? ' active' : ''}`} onClick={() => selectTab(tt.id)}>{tt.label}</button>
+                    )}
+                  </div>
+                )}
+                <div className="nav-menu-group">
+                  <span className="nav-group-label">Personal</span>
+                  {PERSONAL_TABS.map(tt =>
+                    <button key={tt.id} className={`nav-tab personal nav-menu-tab${tab===tt.id ? ' active' : ''}`} onClick={() => selectTab(tt.id)}>
+                      <span className="nav-icon">{tt.icon}</span>{tt.label}
+                    </button>
+                  )}
+                </div>
+                {user && (
+                  <button className="nav-tab logout nav-menu-tab" onClick={() => { setMenuOpen(false); logout(); }}>
+                    Log out
+                  </button>
+                )}
+              </div>
             )}
           </header>
           <main className="main">{renderActive()}</main>

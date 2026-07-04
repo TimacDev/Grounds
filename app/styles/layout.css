@@ -155,4 +155,61 @@
 .nav-tab.personal.active { background: transparent; border-color: #e8a05a; color: #e8a05a; font-weight: 600; }
 .nav-tab .nav-icon { font-size: 13px; opacity: 0.85; }
 .nav-tab.logout { flex-shrink: 0; color: #f5f0e8; border: 1px solid rgba(245,240,232,0.3); }
+
+/* ── Collapsed nav (burger + dropdown) — visibility toggled in responsive.css ── */
+.nav-burger {
+  display: none;
+  margin-left: auto;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  width: 40px;
+  height: 40px;
+  padding: 0;
+  background: none;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}
+.nav-burger:hover { background: rgba(255,255,255,0.08); }
+.nav-burger-line {
+  width: 20px;
+  height: 2px;
+  border-radius: 1px;
+  background: #f5f0e8;
+  transition: transform 0.25s ease, opacity 0.2s ease;
+}
+.nav-burger.open .nav-burger-line:nth-child(1) { transform: translateY(6px) rotate(45deg); }
+.nav-burger.open .nav-burger-line:nth-child(2) { opacity: 0; }
+.nav-burger.open .nav-burger-line:nth-child(3) { transform: translateY(-6px) rotate(-45deg); }
+
+.nav-menu {
+  display: none;
+  /* absolute, not fixed: the header sits inside the transformed .stage-track,
+     which breaks position:fixed (see CoffeeModal.js) */
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  background: #1a1208;
+  border-top: 1px solid rgba(196,176,144,0.18);
+  box-shadow: 0 12px 24px rgba(26,18,8,0.35);
+  padding: 8px 16px 16px;
+  max-height: calc(100vh - 52px);
+  overflow-y: auto;
+}
+.nav-menu-group {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 2px;
+  padding: 10px 0;
+  border-bottom: 1px solid rgba(196,176,144,0.12);
+}
+.nav-menu-group:last-of-type { border-bottom: none; }
+.nav-menu .nav-group-label { margin: 0 0 6px; }
+.nav-menu-tab { justify-content: flex-start; padding: 10px 12px; font-size: 14px; }
+.nav-menu > .nav-tab.logout { display: flex; width: 100%; justify-content: center; margin-top: 12px; }
+
 .main { padding: 32px; max-width: 1100px; margin: 0 auto; }
