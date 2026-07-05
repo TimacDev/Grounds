@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import Auth from '../components/Auth';
 import History from '../components/History';
 import Origins from '../components/Origins';
@@ -39,6 +39,10 @@ export default function App() {
   // Collapsed-nav dropdown (burger menu). Only visible below the bp-nav
   // breakpoint — CSS hides both the burger and the panel on wide screens.
   const [menuOpen, setMenuOpen] = useState(false);
+  const shellRef = useRef(null);
+
+  // New tab = new page: start at the top (the shell keeps its scroll otherwise).
+  useEffect(() => { shellRef.current?.scrollTo(0, 0); }, [tab]);
 
   // Used by the collapsed dropdown: switch tab and close the menu in one go.
   function selectTab(id) {
@@ -77,6 +81,12 @@ export default function App() {
     setTab('history');
   }
 
+  // Login from the standalone Log in tab: land on the journal, the gated feature.
+  function handleAuthed(u) {
+    setUser(u);
+    setTab('journal');
+  }
+
   // Map tab id → the component to render. Keeps the JSX below readable.
   function renderActive() {
     switch (tab) {
@@ -88,6 +98,9 @@ export default function App() {
       case 'hardware':   return <Hardware/>;
       case 'roast':      return <Roast/>;
       case 'quiz':       return <TasteQuiz/>;
+      // Standalone login page — only reachable while logged out (the header
+      // button is hidden once a user is set).
+      case 'login':      return <Auth onAuthed={handleAuthed}/>;
       // The journal is the only gated tab: show it when logged in, otherwise the
       // login/signup form. `null` while we're still checking avoids a flash.
       case 'journal':    return !authChecked ? null : user ? <MyCoffeeJournal coffeePrefill={coffeePrefill} brewPrefill={brewPrefill} submitSignal={submitSignal} user={user}/> : <Auth onAuthed={setUser}/>;
@@ -109,7 +122,7 @@ export default function App() {
           <div className="landing-footer">Est. 2026 — For coffee aficionados in training</div>
         </div>
 
-        <div className="panel app-shell">
+        <div className="panel app-shell" ref={shellRef}>
           <header className="app-header">
             <button className="app-logo" onClick={() => setLandingUp(false)}>Grounds</button>
             <nav className="app-nav">
@@ -144,9 +157,13 @@ export default function App() {
               <span className="nav-burger-line"></span>
               <span className="nav-burger-line"></span>
             </button>
-            {user && (
+            {user ? (
               <button className="nav-tab logout" onClick={logout}>
                 Log out
+              </button>
+            ) : (
+              <button className={`nav-tab login${tab==='login' ? ' active' : ''}`} onClick={() => setTab('login')}>
+                Log in
               </button>
             )}
             {menuOpen && (
@@ -167,9 +184,13 @@ export default function App() {
                     </button>
                   )}
                 </div>
-                {user && (
+                {user ? (
                   <button className="nav-tab logout nav-menu-tab" onClick={() => { setMenuOpen(false); logout(); }}>
                     Log out
+                  </button>
+                ) : (
+                  <button className="nav-tab login nav-menu-tab" onClick={() => selectTab('login')}>
+                    Log in
                   </button>
                 )}
               </div>

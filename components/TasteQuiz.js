@@ -50,39 +50,43 @@ export default function TasteQuiz() {
   if (step === 5) {
     const result = pickResult(answers);
     return (
-      <div className="quiz-wrap">
+      <div>
         <h1 className="page-title">Your Coffee Profile</h1>
-        <div className="sk-box result-box quiz-result">
-          <div className="result-title">{result.title}</div>
-          <div className="result-tags">{result.tags.map(t => <span key={t} className="result-tag">{t}</span>)}</div>
-          <p className="quiz-desc">{result.desc}</p>
-          <div className="divider"></div>
-          <div className="label">Coffees to try</div>
-          <div className="rec-grid">
-            {result.recs.map(r => <div key={r} className="sk-box dashed quiz-rec">{r}</div>)}
+        <div className="quiz-wrap">
+          <div className="sk-box result-box quiz-result">
+            <div className="result-title">{result.title}</div>
+            <div className="result-tags">{result.tags.map(t => <span key={t} className="result-tag">{t}</span>)}</div>
+            <p className="quiz-desc">{result.desc}</p>
+            <div className="divider"></div>
+            <div className="label">Coffees to try</div>
+            <div className="rec-grid">
+              {result.recs.map(r => <div key={r} className="sk-box dashed quiz-rec">{r}</div>)}
+            </div>
           </div>
+          <button className="btn quiz-retake" onClick={restart}>← Retake quiz</button>
         </div>
-        <button className="btn quiz-retake" onClick={restart}>← Retake quiz</button>
       </div>
     );
   }
 
   const q = QUIZ_QUESTIONS[step];
   return (
-    <div className="quiz-wrap">
+    <div>
       <h1 className="page-title"><img className="page-title-icon" src="/icons/quiz.svg" alt="" />Taste Quiz</h1>
       <p className="page-sub">5 quick questions to find your flavor profile.</p>
-      <div className="progress-bar quiz-progress">
-        <div className="progress-fill" style={{'--fill':`${(step/QUIZ_QUESTIONS.length)*100}%`}}></div>
-      </div>
-      <div className="label">Question {step+1} of {QUIZ_QUESTIONS.length}</div>
-      <div className="quiz-question">{q.q}</div>
-      <div className="quiz-options">
-        {q.options.map((opt, i) =>
-          <button key={i} className={`quiz-option${selected===i ? ' selected' : ''}`} onClick={() => choose(i)}>
-            {opt}
-          </button>
-        )}
+      <div className="quiz-wrap">
+        <div className="progress-bar quiz-progress">
+          <div className="progress-fill" style={{'--fill':`${(step/QUIZ_QUESTIONS.length)*100}%`}}></div>
+        </div>
+        <div className="label">Question {step+1} of {QUIZ_QUESTIONS.length}</div>
+        <div className="quiz-question">{q.q}</div>
+        <div className="quiz-options">
+          {q.options.map((opt, i) =>
+            <button key={i} className={`quiz-option${selected===i ? ' selected' : ''}`} onClick={() => choose(i)}>
+              {opt}
+            </button>
+          )}
+        </div>
       </div>
     </div>
   );

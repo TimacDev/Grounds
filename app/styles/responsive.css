@@ -14,7 +14,8 @@
 /* ── bp-nav: collapse the navbar ── */
 @media (max-width: 1500px) {
   .app-nav { display: none; }
-  .app-header > .nav-tab.logout { display: none; } /* moves into the dropdown */
+  .app-header > .nav-tab.logout,
+  .app-header > .nav-tab.login { display: none; } /* both move into the dropdown */
   .nav-burger { display: flex; }
   .nav-menu { display: block; }
 }
