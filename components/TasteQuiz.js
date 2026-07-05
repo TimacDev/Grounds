@@ -25,7 +25,6 @@ export default function TasteQuiz() {
   const [answers, setAnswers] = useState([]);
   const [selected, setSelected] = useState(null);
 
-  // Picks the most common answer index and returns its matching result.
   function pickResult(ans) {
     const counts = [0, 0, 0, 0];
     ans.forEach(a => counts[a]++);
@@ -33,7 +32,6 @@ export default function TasteQuiz() {
     return QUIZ_RESULTS[counts.indexOf(max)];
   }
 
-  // Highlight the chosen option briefly, then advance.
   function choose(idx) {
     setSelected(idx);
     setTimeout(() => {

@@ -1,82 +1,82 @@
-# Grounds — Coffee Field Guide ☕
+# Grounds — Guia de Campo do Café ☕
 
-A field guide for the curious coffee drinker. **Grounds** combines educational content about coffee — its history, origins, processing methods, brewing techniques, water chemistry, hardware, and roast levels — with a personal **Coffee Journal** for logging coffees and brews, a **Taste Quiz** to discover your flavor profile, and **Mr. Beanie**, an AI chatbot assistant that answers coffee questions and helps fill in your journal.
+Um guia de campo para o apreciador de café curioso. O **Grounds** combina conteúdo educativo sobre café — a sua história, origens, métodos de processamento, técnicas de extração, química da água, equipamento e níveis de torra — com um **Coffee Journal** pessoal para registar cafés e extrações, um **Taste Quiz** para descobrir o teu perfil de sabor, e o **Mr. Beanie**, um chatbot assistente com AI que responde a perguntas sobre café e ajuda a preencher o teu journal.
 
 ## Tech Stack
 
-- **[Next.js 16](https://nextjs.org/)** (App Router) + **React 18** — full-stack framework
-- **MySQL** via [`mysql2`](https://www.npmjs.com/package/mysql2) — data persistence (raw SQL, no ORM)
-- **Custom authentication** — [`bcryptjs`](https://www.npmjs.com/package/bcryptjs) password hashing + [`jose`](https://www.npmjs.com/package/jose) JWT session cookies
-- **Google Gemini** via [`@google/genai`](https://www.npmjs.com/package/@google/genai) — AI chatbot with streaming responses and function calling
-- **[`zod`](https://www.npmjs.com/package/zod)** — schema validation · **[`react-markdown`](https://www.npmjs.com/package/react-markdown)** — chatbot reply rendering
-- Plain CSS (no framework), organized under `app/styles/`
+- **[Next.js 16](https://nextjs.org/)** (App Router) + **React 18** — framework full-stack
+- **MySQL** via [`mysql2`](https://www.npmjs.com/package/mysql2) — persistência de dados (SQL puro, sem ORM)
+- **Autenticação personalizada** — hashing de passwords com [`bcryptjs`](https://www.npmjs.com/package/bcryptjs) + session cookies JWT com [`jose`](https://www.npmjs.com/package/jose)
+- **Google Gemini** via [`@google/genai`](https://www.npmjs.com/package/@google/genai) — chatbot com AI, com respostas em streaming e function calling
+- **[`zod`](https://www.npmjs.com/package/zod)** — validação de schemas · **[`react-markdown`](https://www.npmjs.com/package/react-markdown)** — renderização das respostas do chatbot
+- CSS puro (sem framework), organizado em `app/styles/`
 
-## Prerequisites
+## Pré-requisitos
 
-- **Node.js** 18.18 or later (20+ recommended)
-- **npm** (ships with Node.js)
-- A running **MySQL** server (local or remote)
-- A **Google Gemini API key** — free to create at [Google AI Studio](https://aistudio.google.com/apikey)
+- **Node.js** 18.18 ou superior (recomendado 20+)
+- **npm** (incluído com o Node.js)
+- Um servidor **MySQL** em execução (local ou remoto)
+- Uma **API key do Google Gemini** — gratuita, criada em [Google AI Studio](https://aistudio.google.com/apikey)
 
-## Installation
+## Instalação
 
-1. **Clone the repository**
+1. **Clonar o repositório**
 
    ```bash
    git clone https://github.com/TimacDev/Projeto-Final.git
    cd Projeto-Final
    ```
 
-2. **Install dependencies**
+2. **Instalar as dependências**
 
    ```bash
    npm install
    ```
 
-3. **Create the database**
+3. **Criar a base de dados**
 
-   The full schema and sample data live in [`bd.txt`](bd.txt). Run it against your MySQL server:
+   O schema completo e os dados de exemplo estão em [`bd.txt`](bd.txt). Executa-o no teu servidor MySQL:
 
    ```bash
    mysql -u root -p < bd.txt
    ```
 
-   This creates the `coffee_db` database with five tables (`users`, `coffees`, `comments`, `coffee_ratings`, `brew_logs`) and seeds it with sample coffees, brew logs, and ratings.
+   Isto cria a base de dados `coffee_db` com cinco tabelas (`users`, `coffees`, `comments`, `coffee_ratings`, `brew_logs`) e preenche-a com cafés, brew logs e ratings de exemplo.
 
-4. **Configure environment variables**
+4. **Configurar as variáveis de ambiente**
 
-   Create a `.env` file in the project root — see [Environment Variables](#environment-variables) below.
+   Cria um ficheiro `.env` na raiz do projeto — ver [Variáveis de Ambiente](#variáveis-de-ambiente) abaixo.
 
-5. **Run the app**
+5. **Executar a aplicação**
 
    ```bash
    npm run dev
    ```
 
-   The app is now available at [http://localhost:3000](http://localhost:3000).
+   A aplicação fica disponível em [http://localhost:3000](http://localhost:3000).
 
-   For a production build:
+   Para um build de produção:
 
    ```bash
    npm run build
    npm start
    ```
 
-## Environment Variables
+## Variáveis de Ambiente
 
-All variables go in a `.env` file at the project root (gitignored).
+Todas as variáveis vão num ficheiro `.env` na raiz do projeto (ignorado pelo git).
 
-| Variable | Description | Example |
+| Variável | Descrição | Exemplo |
 | --- | --- | --- |
-| `DB_HOST` | MySQL server host | `localhost` |
-| `DB_PORT` | MySQL server port | `3306` |
-| `DB_USER` | MySQL username | `root` |
-| `DB_PASSWORD` | MySQL password | `your_mysql_password` |
-| `DB_NAME` | Database name — must match the schema in `bd.txt` | `coffee_db` |
-| `AUTH_SECRET` | Secret used to sign session JWTs. **Required** — the app throws an error without it. Generate one with `openssl rand -base64 32` | `a-long-random-string` |
-| `GEMINI_API_KEY` | Google Gemini API key, used by the chatbot | `AIza...` |
+| `DB_HOST` | Host do servidor MySQL | `localhost` |
+| `DB_PORT` | Porta do servidor MySQL | `3306` |
+| `DB_USER` | Nome de utilizador MySQL | `root` |
+| `DB_PASSWORD` | Password do MySQL | `your_mysql_password` |
+| `DB_NAME` | Nome da base de dados — tem de corresponder ao schema em `bd.txt` | `coffee_db` |
+| `AUTH_SECRET` | Secret usado para assinar os JWTs de sessão. — a aplicação lança um erro sem ele. Gera um com `openssl rand -base64 32` | `a-long-random-string` |
+| `GEMINI_API_KEY` | API key do Google Gemini, usada pelo chatbot | `AIza...` |
 
-Example `.env`:
+Exemplo de `.env`:
 
 ```env
 DB_HOST=localhost
@@ -84,60 +84,60 @@ DB_PORT=3306
 DB_USER=root
 DB_PASSWORD=your_mysql_password
 DB_NAME=coffee_db
-AUTH_SECRET=paste-a-long-random-string-here
+AUTH_SECRET=paste-a-long-random-string-here -- DISPONIVEL NO PDF, ultima página
 GEMINI_API_KEY=your-gemini-api-key
 ```
 
-## Functional Overview & How to Test
+## Visão Funcional & Como Testar
 
-Grounds is a single-page app: the landing screen leads into a tabbed shell where each tab is a feature. Below is what each area does and how to try it.
+O Grounds é uma single-page app: o ecrã inicial dá acesso a uma shell com tabs, onde cada tab é uma funcionalidade. Abaixo está o que cada área faz e como experimentá-la.
 
-### Landing page
-Open [http://localhost:3000](http://localhost:3000) and click through the landing screen to enter the app (with sound 🔊).
+### Página inicial
+Abre [http://localhost:3000](http://localhost:3000) e clica no ecrã inicial para entrar na aplicação (com som 🔊).
 
-### Guide sections
-The **History**, **Origins**, **Processing**, **Brew**, **Water**, **Hardware**, and **Roast** tabs contain browsable educational content — origin profiles by region, step-by-step brew method instructions (pour-over, espresso, French press, AeroPress, cold brew…), water chemistry, equipment, and roast levels.
+### Secções do guia
+As tabs **History**, **Origins**, **Processing**, **Brew**, **Water**, **Hardware** e **Roast** contêm conteúdo educativo navegável — perfis de origem por região, instruções passo a passo de métodos de extração (pour-over, espresso, French press, AeroPress, cold brew…), química da água, equipamento e níveis de torra.
 
-> **Test:** click through each tab and expand the content cards. On a narrow window (or mobile), the navigation collapses into a hamburger menu — resize the browser to verify.
+> **Teste:** navega por cada tab e expande os cartões de conteúdo. Numa janela estreita (ou em mobile), a navegação colapsa num menu hamburger — redimensiona o browser para verificar.
 
 ### Taste Quiz
-A short quiz that maps your preferences to a coffee flavor profile.
+Um quiz curto que traduz as tuas preferências num perfil de sabor de café.
 
-> **Test:** open the **Quiz** tab, answer the questions, and check that a profile recommendation is produced at the end.
+> **Teste:** abre a tab **Quiz**, responde às perguntas e confirma que é apresentada uma recomendação de perfil no final.
 
-### Accounts (sign up / login)
-Custom email + password authentication. Sessions are kept in an httpOnly cookie and stay valid for 7 days.
+### Contas (registo / login)
+Autenticação personalizada com email + password. As sessões são guardadas num cookie httpOnly e permanecem válidas durante 7 dias.
 
-> **Test:** open the **Login** tab, create a new account via the sign-up form, log in, then refresh the page — you should stay logged in. Log out and confirm the journal becomes inaccessible again.
+> **Teste:** abre a tab **Login**, cria uma conta nova através do formulário de registo, faz login e depois atualiza a página — deves continuar autenticado. Faz logout e confirma que o journal volta a ficar inacessível.
 
-### My Coffee Journal *(requires login)*
-Your personal log: register coffees (roaster, origin, process, roast level…), rate them, comment on them, and record brew logs (method, dose, grind, tasting notes) linked to your coffees. Entries can be edited and deleted. The database seed already includes sample coffees and brews to browse.
+### My Coffee Journal *(requer login)*
+O teu registo pessoal: regista cafés (roaster, origem, processamento, nível de torra…), avalia-os, comenta-os e cria brew logs (método, dose, moagem, notas de prova) associados aos teus cafés. As entradas podem ser editadas e eliminadas. O seed da base de dados já inclui cafés e extrações de exemplo para explorar.
 
-> **Test:** while logged in, open the **Journal** tab — add a coffee, give it a rating, leave a comment, then create a brew log for it. Edit and delete an entry to confirm the full CRUD cycle.
+> **Teste:** com login feito, abre a tab **Journal** — adiciona um café, dá-lhe um rating, deixa um comentário e depois cria um brew log para ele. Edita e elimina uma entrada para confirmar o ciclo CRUD completo.
 
-### Mr. Beanie chatbot 🤖
-A floating AI assistant (bottom corner) powered by Google Gemini. Replies stream in with a typewriter effect and render Markdown. Through function calling, the bot can also pre-fill journal forms for you.
+### Chatbot Mr. Beanie 🤖
+Um assistente AI flutuante (canto inferior) alimentado pelo Google Gemini. As respostas chegam em streaming com efeito de máquina de escrever e renderizam Markdown. Através de function calling, o bot também consegue pré-preencher os formulários do journal por ti.
 
-> **Test:** click the Mr. Beanie button and ask a coffee question (e.g. *"What's the difference between washed and natural process?"*) — the answer should stream in progressively. While logged in, try *"log a coffee for me: Ethiopian natural from roaster X"* and watch it pre-fill the coffee form.
+> **Teste:** clica no botão do Mr. Beanie e faz uma pergunta sobre café (ex.: *"Qual é a diferença entre processamento washed e natural?"*) — a resposta deve aparecer progressivamente. Com login feito, experimenta *"regista-me um café: um natural da Etiópia do roaster X"* e vê o formulário do café a ser pré-preenchido.
 
 
-## Project Structure
+## Estrutura do Projeto
 
 ```
 ├── app/
-│   ├── api/          # API routes: auth, coffees, brew-logs, chat (streaming), bot logic
-│   ├── styles/       # All CSS (imported in layout.js — no inline styles)
-│   ├── layout.js     # Root layout, fonts, global styles
-│   └── page.js       # Landing screen + tabbed app shell
-├── components/       # UI components (guides, quiz, journal, chatbot, auth…)
-├── data/             # Static content (origins, brew methods)
-├── lib/              # Server helpers: db pool, auth/session, validation
-├── public/           # Static assets (mascot, icons, sounds)
-└── bd.txt            # MySQL schema + seed data
+│   ├── api/          # Rotas da API: auth, coffees, brew-logs, chat (streaming), lógica do bot
+│   ├── styles/       # Todo o CSS (importado em layout.js — sem estilos inline)
+│   ├── layout.js     # Layout raiz, fontes, estilos globais
+│   └── page.js       # Ecrã inicial + shell da aplicação com tabs
+├── components/       # Componentes de UI (guias, quiz, journal, chatbot, auth…)
+├── data/             # Conteúdo estático (origens, métodos de extração)
+├── lib/              # Helpers de servidor: db pool, auth/sessão, validação
+├── public/           # Assets estáticos (mascote, ícones, sons)
+└── bd.txt            # Schema MySQL + dados de seed
 ```
 
-## Authors
+## Autores
 
-**Group** — Danilo Quintal & Tiago Machado
+**Grupo** — Danilo Quintal & Tiago Machado
 
-Repository: [https://github.com/TimacDev/Projeto-Final](https://github.com/TimacDev/Projeto-Final)
+Repositório: [https://github.com/TimacDev/Projeto-Final](https://github.com/TimacDev/Projeto-Final)
