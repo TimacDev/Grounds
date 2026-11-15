@@ -7,7 +7,7 @@
 const isStatic = process.env.STATIC_EXPORT === 'true';
 
 // GitHub Pages serves a project site under https://<user>.github.io/<repo>/.
-const basePath = isStatic ? '/Projeto-Final' : '';
+const basePath = isStatic ? '/Grounds' : '';
 
 const nextConfig = {
   output: isStatic ? 'export' : undefined,

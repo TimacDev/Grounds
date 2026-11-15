@@ -158,7 +158,7 @@
 /* Personal-tab icons: the SVG in public/icons/ is used as a mask so the
    icon tints with the tab's text color (hover/active states included).
    The url()s are relative so the bundler copies the files into _next/ —
-   that way they also load under the /Projeto-Final/ path on GitHub Pages. */
+   that way they also load under the /Grounds/ path on GitHub Pages. */
 .nav-tab .nav-icon {
   width: 14px;
   height: 14px;

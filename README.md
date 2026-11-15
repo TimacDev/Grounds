@@ -23,8 +23,8 @@ Um guia de campo para o apreciador de café curioso. O **Grounds** combina conte
 1. **Clonar o repositório**
 
    ```bash
-   git clone https://github.com/TimacDev/Projeto-Final.git
-   cd Projeto-Final
+   git clone https://github.com/TimacDev/Grounds.git
+   cd Grounds
    ```
 
 2. **Instalar as dependências**
@@ -140,4 +140,4 @@ Um assistente AI flutuante (canto inferior) alimentado pelo Google Gemini. As re
 
 **Grupo** — Danilo Quintal & Tiago Machado
 
-Repositório: [https://github.com/TimacDev/Projeto-Final](https://github.com/TimacDev/Projeto-Final)
+Repositório: [https://github.com/TimacDev/Grounds](https://github.com/TimacDev/Grounds)

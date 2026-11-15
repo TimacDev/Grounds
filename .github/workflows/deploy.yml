@@ -1,5 +1,5 @@
 # Publishes the public, front-end-only version of Grounds to GitHub Pages
-# (https://timacdev.github.io/Projeto-Final/). Pages only serves static files,
+# (https://timacdev.github.io/Grounds/). Pages only serves static files,
 # so the API routes are left out and the server-backed features (Log in,
 # My Coffee Journal, Mr. Beanie) show a notice instead — see lib/staticSite.js.
 # Requires Settings → Pages → Build and deployment → Source: "GitHub Actions".
