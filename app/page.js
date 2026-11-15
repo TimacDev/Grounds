@@ -12,6 +12,8 @@ import Roast from '../components/Roast';
 import TasteQuiz from '../components/TasteQuiz';
 import ChatBot from '../components/ChatBot';
 import MyCoffeeJournal from '../components/MyCoffeeJournal/MyCoffeeJournal';
+import StaticNotice from '../components/StaticNotice';
+import { IS_STATIC_SITE, asset } from '../lib/staticSite';
 
 // Top nav structure — three themed groups + the personal tools group on the right.
 const GUIDE_GROUPS = [
@@ -52,7 +54,9 @@ export default function App() {
 
   // On load, ask the server who we are (via the session cookie) so a refresh
   // keeps you logged in. authChecked avoids flashing the login form first.
+  // The static GitHub Pages build has no API to ask, so it skips the check.
   useEffect(() => {
+    if (IS_STATIC_SITE) return;
     fetch('/api/auth/user')
       .then((r) => (r.ok ? r.json() : null))
       .then((data) => setUser(data?.user ?? null))
@@ -89,6 +93,9 @@ export default function App() {
 
   // Map tab id → the component to render. Keeps the JSX below readable.
   function renderActive() {
+    // Static GitHub Pages build: the server-backed tabs stay in the nav but
+    // explain why they're unavailable instead of rendering a form that can't work.
+    if (IS_STATIC_SITE && (tab === 'login' || tab === 'journal')) return <StaticNotice feature={tab}/>;
     switch (tab) {
       case 'history':    return <History goTab={setTab}/>;
       case 'origins':    return <Origins/>;
@@ -118,7 +125,7 @@ export default function App() {
           <p className="landing-sub">
             Discover the world of coffee — from origin to cup. Explore brew methods, find your flavor profile, and log every cup along the way.
           </p>
-          <button className="landing-btn" onClick={() => { new Audio('/pouring-a-cup-of-coffee.wav').play(); setLandingUp(true); }}>Enter the guide</button>
+          <button className="landing-btn" onClick={() => { new Audio(asset('/pouring-a-cup-of-coffee.wav')).play(); setLandingUp(true); }}>Enter the guide</button>
           <div className="landing-footer">Est. 2026 — For coffee aficionados in training</div>
         </div>
 

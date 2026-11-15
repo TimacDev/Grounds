@@ -1,3 +1,5 @@
+import { asset } from '../lib/staticSite';
+
 const WATER_MINERALS = [
   { sym:'Ca²⁺', name:'Calcium', role:'The extractor',
     desc:'Binds to coffee compounds and pulls them out of the grounds. Too little — your cup tastes empty and thin. Too much — it scales your machine.' },
@@ -19,7 +21,7 @@ const WATER_SOURCES = [
 export default function Water() {
   return (
     <div>
-      <h1 className="page-title"><img className="page-title-icon" src="/icons/water.svg" alt="" />Water</h1>
+      <h1 className="page-title"><img className="page-title-icon" src={asset('/icons/water.svg')} alt="" />Water</h1>
       <p className="page-sub">Your cup is ~98% water. Spend a year buying great beans and the wrong water will still flatten every one of them.</p>
 
       <div className="water-hero">

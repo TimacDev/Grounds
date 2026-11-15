@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { BREW_METHODS } from '../data/brewMethods';
+import { asset } from '../lib/staticSite';
 
 export default function Brew() {
   const [method, setMethod] = useState(BREW_METHODS[0]);
@@ -7,7 +8,7 @@ export default function Brew() {
 
   return (
     <div>
-      <h1 className="page-title"><img className="page-title-icon" src="/icons/brew.svg" alt="" />Brew Methods</h1>
+      <h1 className="page-title"><img className="page-title-icon" src={asset('/icons/brew.svg')} alt="" />Brew Methods</h1>
       <p className="page-sub">Pick a brew method and follow the steps.</p>
       <div className="method-grid">
         {BREW_METHODS.map(m =>

@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { createPortal } from 'react-dom';
 import TasteDots from './TasteDots';
 import { ORIGINS, REGIONS } from '../data/origins';
+import { asset } from '../lib/staticSite';
 
 export default function Origins() {
   const [region, setRegion] = useState('all');
@@ -17,7 +18,7 @@ export default function Origins() {
 
   return (
     <div>
-      <h1 className="page-title"><img className="page-title-icon" src="/icons/origins.svg" alt="" />Origins Guide</h1>
+      <h1 className="page-title"><img className="page-title-icon" src={asset('/icons/origins.svg')} alt="" />Origins Guide</h1>
       <p className="page-sub">Every great cup starts somewhere. Here you can find some of the most relevant countries in coffee production.</p>
 
       <div className="origins-intro">

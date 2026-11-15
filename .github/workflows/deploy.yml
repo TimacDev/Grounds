@@ -1,0 +1,52 @@
+# Publishes the public, front-end-only version of Grounds to GitHub Pages
+# (https://timacdev.github.io/Projeto-Final/). Pages only serves static files,
+# so the API routes are left out and the server-backed features (Log in,
+# My Coffee Journal, Mr. Beanie) show a notice instead — see lib/staticSite.js.
+# Requires Settings → Pages → Build and deployment → Source: "GitHub Actions".
+name: Deploy to GitHub Pages
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci
+      # Route handlers need a Node server and MySQL, which Pages doesn't have,
+      # and `output: 'export'` refuses to build with them. Only this CI copy
+      # loses them — the repository keeps app/api.
+      - run: rm -rf app/api
+      - run: npm run build
+        env:
+          STATIC_EXPORT: 'true'
+      - uses: actions/configure-pages@v6
+      - uses: actions/upload-pages-artifact@v5
+        with:
+          path: out
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v5

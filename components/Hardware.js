@@ -1,3 +1,5 @@
+import { asset } from '../lib/staticSite';
+
 const HW_PRIORITY = [
   { name:'Grinder',  pct:50, desc:'Particle size and consistency control everything downstream.' },
   { name:'Water',    pct:25, desc:'The solvent. Wrong chemistry, no amount of fancy gear helps.' },
@@ -15,7 +17,7 @@ const HW_KIT = [
 export default function Hardware() {
   return (
     <div>
-      <h1 className="page-title"><img className="page-title-icon" src="/icons/hardware.svg" alt="" />Hardware</h1>
+      <h1 className="page-title"><img className="page-title-icon" src={asset('/icons/hardware.svg')} alt="" />Hardware</h1>
       <p className="page-sub">There is one piece of equipment that matters more than every other piece of equipment combined.</p>
 
       <div className="hw-callout">

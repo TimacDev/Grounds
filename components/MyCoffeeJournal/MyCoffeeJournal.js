@@ -4,6 +4,7 @@ import CoffeeForm from "./CoffeeForm";
 import BrewCollection from "./BrewCollection";
 import CoffeeCollection from "./CoffeeCollection";
 import ErrorMessage from "../ErrorMessage";
+import { asset } from "../../lib/staticSite";
 
 export default function MyCoffeeJournal({ coffeePrefill, brewPrefill, submitSignal, user } = {}) {
   const [entries, setEntries] = useState([]);
@@ -207,7 +208,7 @@ export default function MyCoffeeJournal({ coffeePrefill, brewPrefill, submitSign
   return (
     <>
     <div>
-      <h1 className="page-title"><img className="page-title-icon" src="/icons/journal.svg" alt="" />My Coffee Journal</h1>
+      <h1 className="page-title"><img className="page-title-icon" src={asset("/icons/journal.svg")} alt="" />My Coffee Journal</h1>
       <p className="page-sub">
         Record every cup you drink and build your taste history.
       </p>

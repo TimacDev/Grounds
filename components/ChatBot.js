@@ -2,6 +2,7 @@
 
 import { useState, useRef, useEffect } from "react";
 import ReactMarkdown from "react-markdown";
+import { IS_STATIC_SITE, asset, README_URL } from "../lib/staticSite";
 
 // Typewriter pacing: the model streams much faster than a comfortable reading
 // speed, so replies are revealed a few characters per tick (~75 chars/sec).
@@ -19,14 +20,15 @@ const TEASERS = [
   { text: "Ask me anything about coffee!", showAt: 9500, hideAt: 15500 },
 ];
 
+// The static GitHub Pages build has no /api/chat (or Gemini key) behind it, so
+// there Mr. Beanie opens with an explanation and the input stays disabled.
+const GREETING = IS_STATIC_SITE
+  ? `Hi! Mr. Beanie here — but I can't chat in this public version of Grounds, because I need its server to answer. To talk to me, run the full app locally (see the [README](${README_URL})).`
+  : "Hi! Mr. Beanie here to help you on your coffee journey! Ask me anything from bean to cup!";
+
 export default function ChatBot({ visible = true, onPrefill, onSubmitForm }) {
   const [open, setOpen] = useState(false);
-  const [messages, setMessages] = useState([
-    {
-      role: "bot",
-      text: "Hi! Mr. Beanie here to help you on your coffee journey! Ask me anything from bean to cup!",
-    },
-  ]);
+  const [messages, setMessages] = useState([{ role: "bot", text: GREETING }]);
   const [input, setInput] = useState("");
   const [sending, setSending] = useState(false);
   const [streaming, setStreaming] = useState(false);
@@ -185,7 +187,7 @@ export default function ChatBot({ visible = true, onPrefill, onSubmitForm }) {
           tabIndex={tabIndex}
         >
           <img
-            src="/MrBeanie.svg"
+            src={asset("/MrBeanie.svg")}
             alt=""
             width={28}
             height={28}
@@ -237,10 +239,10 @@ export default function ChatBot({ visible = true, onPrefill, onSubmitForm }) {
         <input
           className="chatbot-input"
           type="text"
-          placeholder="Ask about coffee…"
+          placeholder={IS_STATIC_SITE ? "Chat is offline in this version" : "Ask about coffee…"}
           value={input}
           onChange={(e) => setInput(e.target.value)}
-          disabled={sending}
+          disabled={sending || IS_STATIC_SITE}
           autoFocus
         />
         <button

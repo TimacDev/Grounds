@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { asset } from '../lib/staticSite';
 
 const QUIZ_QUESTIONS = [
   { q: 'When you think of a perfect drink, you prefer it to be…',
@@ -70,7 +71,7 @@ export default function TasteQuiz() {
   const q = QUIZ_QUESTIONS[step];
   return (
     <div>
-      <h1 className="page-title"><img className="page-title-icon" src="/icons/quiz.svg" alt="" />Taste Quiz</h1>
+      <h1 className="page-title"><img className="page-title-icon" src={asset('/icons/quiz.svg')} alt="" />Taste Quiz</h1>
       <p className="page-sub">5 quick questions to find your flavor profile.</p>
       <div className="quiz-wrap">
         <div className="progress-bar quiz-progress">

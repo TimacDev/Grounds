@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { asset } from '../lib/staticSite';
 
 const ROAST_DATA = [
   { name:'Light ☀️', temp:'196–205°C', acidity:'High', body:'Light', flavor:['Fruity','Floral','Citrus','Bright'], notes:'The bean’s origin character shines through. More caffeine, complex aromas, and the most nuanced flavor. Harder to brew well.', beans:'Ethiopian Yirgacheffe, Kenyan AA, Guatemalan Antigua' },
@@ -13,7 +14,7 @@ export default function Roast() {
 
   return (
     <div>
-      <h1 className="page-title"><img className="page-title-icon" src="/icons/roast.svg" alt="" />Roast Types</h1>
+      <h1 className="page-title"><img className="page-title-icon" src={asset('/icons/roast.svg')} alt="" />Roast Types</h1>
       <p className="page-sub">Slide to explore how roast level changes flavor.</p>
       <div className="roast-slider">
         <div className="roast-labels">

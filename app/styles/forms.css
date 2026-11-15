@@ -5,6 +5,10 @@
 .auth-sub { margin-bottom: 22px; }
 .auth-field { margin-bottom: 14px; }
 .auth-error { color: #b3402e; font-size: 14px; margin-bottom: 14px; }
+/* Static GitHub Pages build: the login-style card that stands in for Log in /
+   My Coffee Journal (components/StaticNotice.js). */
+.static-notice-text { font-size: 14px; line-height: 1.5; color: #1a1208; }
+.static-notice-text a { color: #6f4e2e; font-weight: 600; }
 
 /* Error toast: bottom-right, stacked above the chat bubble (chatbot sits at bottom:36px/right:36px). */
 .toast {
